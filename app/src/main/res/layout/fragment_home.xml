@@ -74,7 +74,7 @@
                 android:id="@+id/card1"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 app:cardCornerRadius="4dp"
                 app:cardBackgroundColor="#81cfe0"
                 app:cardElevation="2dp">
@@ -147,8 +147,8 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="360dp"
+                android:layout_marginLeft="2dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:layout_span="2"
                 app:cardBackgroundColor="#3498db"
                 app:cardCornerRadius="4dp"
