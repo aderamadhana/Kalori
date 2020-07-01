@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.166" />
 
     <RadioGroup
-        android:id="@+id/radio_group"
+        android:id="@+id/jenis_kelamin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -33,6 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.227">
+
         <RadioButton
             android:id="@+id/radio1"
             android:layout_width="0dp"
@@ -42,6 +43,7 @@
             android:typeface="sans"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:checked="true"
             android:text="Laki - Laki" />
 
         <RadioButton
@@ -58,7 +60,7 @@
     </RadioGroup>
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editTextUsia"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/round_2"
@@ -90,7 +92,7 @@
         app:layout_constraintVertical_bias="0.304" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/editTextBeratBadan"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/round_2"
@@ -110,7 +112,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tinggi Badan"
+        android:text="Tinggi Badan (cm)"
         android:textColor="#ffffff"
         android:textSize="@dimen/_16sdp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -121,7 +123,7 @@
         app:layout_constraintVertical_bias="0.596" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/editTextTinggiBadan"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/round_2"
@@ -157,7 +159,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Berat Badan"
+        android:text="Berat Badan (kg)"
         android:textColor="#ffffff"
         android:textSize="@dimen/_16sdp"
         android:typeface="sans"

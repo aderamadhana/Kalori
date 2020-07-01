@@ -18,12 +18,21 @@ public class Splash extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
+        final String usia = AppPreference.getUSIA(this);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent apasih = new Intent(Splash.this,SettingActivity.class);
-                startActivity(apasih);
-                this.selesai();
+                if(usia!=null){
+                    Intent apasih = new Intent(Splash.this,MainActivity.class);
+                    startActivity(apasih);
+                    this.selesai();
+                }else{
+                    Intent apasih = new Intent(Splash.this,SettingActivity.class);
+                    startActivity(apasih);
+                    this.selesai();
+                }
+
             }
             private void selesai(){
                 finish();

@@ -1,6 +1,7 @@
 package com.example.kalori;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
