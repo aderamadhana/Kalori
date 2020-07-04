@@ -13,46 +13,56 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.kalori.AppPreference;
 import com.example.kalori.R;
+import com.example.kalori.SettingActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.concurrent.Executor;
-
 import static android.content.Context.SENSOR_SERVICE;
 
 public class HomeFragment extends Fragment {
+
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     private double MagnitudePrevious = 0;
     private Integer stepCount = 0;
-    private TextView textViewGoals, txtJarak, txtSteps;
+    private TextView textViewGoals, txtJarak, txtSteps, txtBakar, txtSetting;
     private String usia, tinggi, berat, jk;
     private double lat_awal=0, long_awal=0, lat_akhir=0, long_akhir=0;
     private double hitung;
-    private TextView stop, start;
+    private Button stop, start;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         textViewGoals = root.findViewById(R.id.txtGoals);
+
         stop = root.findViewById(R.id.stop);
         start = root.findViewById(R.id.start);
+
         txtJarak= root.findViewById(R.id.txtJarak);
         txtSteps = root.findViewById(R.id.txtSteps);
+        txtBakar = root.findViewById(R.id.txt_bakar);
+        txtSetting = root.findViewById(R.id.txtSetting);
+
         usia = AppPreference.getUSIA(getContext());
         tinggi = AppPreference.getTINGGI(getContext());
         berat = AppPreference.getBERAT(getContext());
@@ -73,38 +83,52 @@ public class HomeFragment extends Fragment {
             textViewGoals.setText(String.format("%.2f", hitung) + " cals");
         }
 
-        start.setOnClickListener(new View.OnClickListener() {
+        txtSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txtJarak.setText("0 m");
-//                FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(v.getContext());
-//                mFusedLocation.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        if (location != null){
-//
-//                            Toast.makeText(getActivity(), String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
-//                            Toast.makeText(getActivity(), String.valueOf(location.getLongitude()), Toast.LENGTH_LONG).show();
-//
-//                            AppPreference.removeLatAwal(getActivity());
-//                            AppPreference.removeLongAwal(getActivity());
-//                            AppPreference.removeLatAkhir(getActivity());
-//                            AppPreference.removeLongAkhir(getActivity());
-//
-//                            AppPreference.saveLatAwal(getActivity(), String.valueOf(location.getLatitude()));
-//                            AppPreference.saveLongAwal(getActivity(), String.valueOf(location.getLongitude()));
-//
-//                            Log.e("lat", AppPreference.getLatAwal(getActivity()));
-//                            Log.e("long", AppPreference.getLongAwal(getActivity()));
-//
-//                            start.setVisibility(View.GONE);
-//                            stop.setVisibility(View.VISIBLE);
-//
-//                            //Toast.makeText(MainActivity.this, String.valueOf(distance(Double.parseDouble(AppPreference.getLatAwal(MainActivity.this)), Double.parseDouble(AppPreference.getLongAwal(MainActivity.this)), -7.939878, 112.637960)), Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
+                Intent i = new Intent(getContext(), SettingActivity.class);
+                startActivity(i);
+            }
+        });
 
+        start.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+                }else{
+                    FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(v.getContext());
+                    mFusedLocation.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null){
+
+                                Toast.makeText(getActivity(), String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), String.valueOf(location.getLongitude()), Toast.LENGTH_LONG).show();
+
+                                AppPreference.removeLatAwal(getActivity());
+                                AppPreference.removeLongAwal(getActivity());
+                                AppPreference.removeLatAkhir(getActivity());
+                                AppPreference.removeLongAkhir(getActivity());
+
+                                AppPreference.saveLatAwal(getActivity(), String.valueOf(location.getLatitude()));
+                                AppPreference.saveLongAwal(getActivity(), String.valueOf(location.getLongitude()));
+
+                                Log.e("lat", AppPreference.getLatAwal(getActivity()));
+                                Log.e("long", AppPreference.getLongAwal(getActivity()));
+
+                                start.setVisibility(View.GONE);
+                                stop.setVisibility(View.VISIBLE);
+
+                                //Toast.makeText(MainActivity.this, String.valueOf(distance(Double.parseDouble(AppPreference.getLatAwal(MainActivity.this)), Double.parseDouble(AppPreference.getLongAwal(MainActivity.this)), -7.939878, 112.637960)), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                }
 
                 SensorManager sensorManager = (SensorManager) getContext().getSystemService(SENSOR_SERVICE);
                 Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -124,6 +148,7 @@ public class HomeFragment extends Fragment {
                                 stepCount++;
                             }
                             txtSteps.setText(stepCount.toString());
+
                         }
                     }
 
@@ -139,10 +164,17 @@ public class HomeFragment extends Fragment {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppPreference.saveSteps(getContext(), String.valueOf(stepCount));
+                String getstep = AppPreference.getSteps(getContext());
+                double hasilBakar = (Double.parseDouble(getstep)/2000)*200;
+
+                txtBakar.setText(String.format("%.2f", hasilBakar)+" cals");
+                
                 start.setVisibility(View.VISIBLE);
                 stop.setVisibility(View.GONE);
                 FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(v.getContext());
                 mFusedLocation.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null){
@@ -166,10 +198,8 @@ public class HomeFragment extends Fragment {
                             Log.e("long2", String.valueOf(long_akhir));
 
                             double jarak = distance(lat_awal, long_awal, lat_akhir, long_akhir);
-                            txtJarak.setText(String.valueOf(jarak));
-
-
-                            //Toast.makeText(MainActivity.this, String.valueOf(distance(Double.parseDouble(AppPreference.getLatAwal(MainActivity.this)), Double.parseDouble(AppPreference.getLongAwal(MainActivity.this)), Double.parseDouble(AppPreference.getLatAkhir(MainActivity.this)), Double.parseDouble(AppPreference.getLongAkhir(MainActivity.this)))), Toast.LENGTH_SHORT).show();
+                            txtJarak.setText(String.format("%.2f", jarak) + " m");
+                                                        //Toast.makeText(MainActivity.this, String.valueOf(distance(Double.parseDouble(AppPreference.getLatAwal(MainActivity.this)), Double.parseDouble(AppPreference.getLongAwal(MainActivity.this)), Double.parseDouble(AppPreference.getLatAkhir(MainActivity.this)), Double.parseDouble(AppPreference.getLongAkhir(MainActivity.this)))), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

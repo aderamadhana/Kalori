@@ -15,6 +15,27 @@ public class AppPreference {
     static final String LongAwal = "LongAwal";
     static final String LatAkhir = "LatAkhir";
     static final String LongAkhir = "LongAkhir";
+    static final String Steps = "Steps";
+
+    public static void saveSteps(Context context, String user){
+        context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+                .edit().putString(Steps, user).apply();
+    }
+
+    public static String getSteps(Context context){
+        SharedPreferences pref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        if(pref.contains(Steps)){
+            return pref.getString(Steps, null);
+        }
+        return null;
+    }
+
+    public static void removeSteps(Context context){
+        SharedPreferences pref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        if(pref.contains(Steps)){
+            pref.edit().remove(Steps).apply();
+        }
+    }
 
     public static void saveJK(Context context, String user){
         context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
