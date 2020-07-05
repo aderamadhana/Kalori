@@ -54,6 +54,7 @@ public class HomeFragment extends Fragment {
     private String usia, tinggi, berat, jk;
     private double hitung;
     private Button stop, start;
+    private double distance;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -272,8 +273,11 @@ public class HomeFragment extends Fragment {
                                             double getLongAwal = Double.parseDouble(AppPreference.getLongAwal(getContext()));
                                             double getLatAkhir = Double.parseDouble(AppPreference.getLatAkhir(getContext()));
                                             double getLongAkhir = Double.parseDouble(AppPreference.getLongAkhir(getContext()));
-
-                                            double distance = distance(getLatAwal, getLongAwal, getLatAkhir, getLongAkhir);
+                                            if(getLatAwal == getLatAkhir){
+                                                distance = stepCount*0.5;
+                                            }else{
+                                                distance = distance(getLatAwal, getLongAwal, getLatAkhir, getLongAkhir);
+                                            }
                                             txtJarak.setText(String.format("%.2f", distance)+" m");
                                         }
                                     }
