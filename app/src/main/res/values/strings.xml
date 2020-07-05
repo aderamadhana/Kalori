@@ -11,10 +11,11 @@
     <string name="nrp">NRP : 171111020</string>
     <string name="prodi">Prodi : Teknik Informatika</string>
     <string name="help">Pusat Bantuan</string>
-    <string name="help1">1. Pastikan aplikasi terhubung dengan internet dan GPS</string>
-    <string name="help2">2. User wajib mengisi pengaturan awal aplikasi</string>
-    <string name="help3">3. Setelah mengisi form, muncul target kalori yang akan dicapai</string>
-    <string name="help4">4. Aplikasi akan menampilkan jumlah langkah yang ditempuh</string>
-    <string name="help5">5. Aplikasi akan menghitung kalori yang dikeluarkan</string>
-    <string name="help6">6. Aplikasi akan menghitung jarak yang ditempuh user</string>
+    <string name="helpintro1">1. Pastikan aplikasi terhubung dengan internet dan GPS</string>
+    <string name="helpintro2">2. Pastikan Anda berada diluar rumah</string>
+    <string name="bantuan1">3. Pastikan Anda mengisi form yang terdapat didalam aplikasi, form ini akan digunakan untuk menghitung kebutuhan kalori Anda</string>
+    <string name="bantuan2">4. Muncul halaman beranda aplikasi, kemudian klik start untuk memulai menghitung langkah</string>
+    <string name="bantuan3">5. Klik START dan Aplikasi akan mendapatkan titik awal lokasi Anda</string>
+    <string name="bantuan4">6. Klik STOP dan Aplikasi akan mendapatkan titik akhir lokasi Anda</string>
+    <string name="bantuan5">7. Aplikasi menampilkan jumlah langkah, jumlah kalori yang dikeluarkan dan jarak yang Anda tempuh</string>
 </resources>
