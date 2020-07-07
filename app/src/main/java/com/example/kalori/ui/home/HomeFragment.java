@@ -45,7 +45,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import static android.content.Context.SENSOR_SERVICE;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     private double MagnitudePrevious = 0;
@@ -55,6 +55,9 @@ public class HomeFragment extends Fragment {
     private double hitung;
     private Button stop, start;
     private double distance;
+    SensorManager sensorManager;
+    Sensor sensor;
+    SensorEventListener stepDetector;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -72,6 +75,9 @@ public class HomeFragment extends Fragment {
         tinggi = AppPreference.getTINGGI(getContext());
         berat = AppPreference.getBERAT(getContext());
         jk = AppPreference.getJK(getContext());
+
+        sensorManager = (SensorManager) getContext().getSystemService(SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         double usia1 = Double.parseDouble(usia);
         double tinggi1 = Double.parseDouble(tinggi);
@@ -96,10 +102,32 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        start.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
+        start.setOnClickListener(this);
+
+        stop.setOnClickListener(this);
+
+        return root;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(start.isPressed()){
+                    getFirstLocation();
+                }else if(stop.isPressed()){
+                    getLastLocation();
+                }
+            } else {
+                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.start:
                 if (ContextCompat.checkSelfPermission(
                         getContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -112,9 +140,7 @@ public class HomeFragment extends Fragment {
                     stop.setVisibility(View.VISIBLE);
                     getFirstLocation();
                 }
-                SensorManager sensorManager = (SensorManager) getContext().getSystemService(SENSOR_SERVICE);
-                Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                SensorEventListener stepDetector = new SensorEventListener() {
+                stepDetector = new SensorEventListener() {
                     @Override
                     public void onSensorChanged(SensorEvent sensorEvent) {
                         if (sensorEvent!= null){
@@ -139,18 +165,15 @@ public class HomeFragment extends Fragment {
                 };
 
                 sensorManager.registerListener(stepDetector, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            }
-        });
-
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.stop:
+                sensorManager.unregisterListener(stepDetector);
                 AppPreference.saveSteps(getContext(), String.valueOf(stepCount));
                 String getstep = AppPreference.getSteps(getContext());
                 double hasilBakar = (Double.parseDouble(getstep)/2000)*200;
 
                 txtBakar.setText(String.format("%.2f", hasilBakar)+" cals");
-                
+
                 start.setVisibility(View.VISIBLE);
                 stop.setVisibility(View.GONE);
 
@@ -166,27 +189,12 @@ public class HomeFragment extends Fragment {
                     stop.setVisibility(View.GONE);
                     getLastLocation();
                 }
-            }
-        });
+                break;
+            default:
+                break;
 
-
-        return root;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(start.isPressed()){
-                    getFirstLocation();
-                }else if(stop.isPressed()){
-                    getLastLocation();
-                }
-            } else {
-                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-            }
         }
+
     }
 
     public void getFirstLocation() {
